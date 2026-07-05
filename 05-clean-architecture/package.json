@@ -1,0 +1,33 @@
+{
+  "name": "formacao-arquitetura-de-software",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "compose:up": "docker compose -f docker/docker-compose.yaml up -d",
+    "compose:down": "docker compose -f docker/docker-compose.yaml down -v",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "@types/sinon": "^22.0.0",
+    "@vitest/coverage-v8": "^4.1.9",
+    "sinon": "^22.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "axios": "^1.18.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "pg-promise": "^12.6.2"
+  }
+}
