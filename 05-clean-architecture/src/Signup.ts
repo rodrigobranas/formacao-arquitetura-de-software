@@ -1,15 +1,15 @@
 import type AccountRepository from "./AccountRepository.ts";
 import Account from "./Account.ts";
-import type Usecase from "./Usecase.ts";
+import type UseCase from "./UseCase.ts";
 
-export class Signup implements Usecase {
+export class Signup implements UseCase {
 
     constructor (
         readonly accountRepository: AccountRepository
     ) {
     }
 
-    async execute (input: SignupInput): Promise<SignupOutput> {
+    async execute (input: Input): Promise<Output> {
         const account = Account.create(input.name, input.email, input.document, input.password);
         await this.accountRepository.save(account);
         return {
@@ -18,13 +18,13 @@ export class Signup implements Usecase {
     }
 }
 
-type SignupInput = {
+type Input = {
     name: string,
     email: string,
     document: string,
     password: string
 }
 
-type SignupOutput = {
+type Output = {
     accountId: string
 }

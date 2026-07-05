@@ -1,4 +1,4 @@
-export default interface Usecase {
+export default interface UseCase {
     execute (input: Input): Promise<Output | void>;
 }
 

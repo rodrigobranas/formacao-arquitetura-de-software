@@ -148,3 +148,21 @@ test("Deve fazer um depósito em uma conta com fake", async () => {
     expect(outputGetAccount.balances[0]?.assetId).toBe("USD");
     expect(outputGetAccount.balances[0]?.quantity).toBe(100);
 });
+
+test("Não deve fazer depósito em uma conta que não existe", async () => {
+    const accountRepository = new AccountRepositoryDatabase();
+    const paymentGateway = new PaymentGatewayFake();
+    const signup = new Signup(accountRepository);
+    const getAccount = new GetAccount(accountRepository);
+    const deposit = new Deposit(accountRepository, paymentGateway);
+    const inputDeposit = {
+        accountId: crypto.randomUUID(),
+        assetId: "USD",
+        quantity: 100,
+        creditCardHolder: "JOHN DOE",
+        creditCardNumber: "4012001037141112",
+        creditCardExpDate: "05/2027",
+        creditCardCvv: "123"
+    }
+    await expect(() => deposit.execute(inputDeposit)).rejects.toThrow(new Error("Account not found"));
+});
