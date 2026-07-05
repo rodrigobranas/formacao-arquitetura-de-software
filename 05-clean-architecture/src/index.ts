@@ -1,9 +1,13 @@
 import { AccountRepositoryDatabase } from "./AccountRepository.ts";
-import { AccountServiceImpl } from "./AccountService.ts";
 import API from "./api.ts";
+import { Deposit } from "./Deposit.ts";
+import { GetAccount } from "./GetAccount.ts";
 import { PaymentGatewayHttp } from "./PaymentGateway.ts";
+import { Signup } from "./Signup.ts";
 
 const accountRepository = new AccountRepositoryDatabase();
 const paymentGateway = new PaymentGatewayHttp();
-const accountService = new AccountServiceImpl(accountRepository, paymentGateway);
-const api = new API(accountService);
+const signup = new Signup(accountRepository);
+const getAccount = new GetAccount(accountRepository);
+const deposit = new Deposit(accountRepository, paymentGateway);
+const api = new API(signup, getAccount, deposit);

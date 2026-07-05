@@ -2,11 +2,17 @@
 
 import express, { type Request, type Response } from "express";
 import cors from "cors";
-import type AccountService from "./AccountService.ts";
+import type { Signup } from "./Signup.ts";
+import type { GetAccount } from "./GetAccount.ts";
+import type { Deposit } from "./Deposit.ts";
 
 export default class API {
 
-    constructor (readonly accountService: AccountService) {
+    constructor (
+        readonly signup: Signup,
+        readonly getAccount: GetAccount,
+        readonly deposit: Deposit
+    ) {
         const app = express();
         app.use(express.json());
         app.use(cors());
@@ -14,7 +20,7 @@ export default class API {
         app.post("/signup", async (req: Request, res: Response) => {
             const input = req.body;
             try {
-                const output = await accountService.signup(input);
+                const output = await this.signup.execute(input);
                 res.json({
                     accountId: output.accountId
                 });
@@ -27,7 +33,7 @@ export default class API {
 
         app.get("/accounts/:accountId", async (req: Request, res: Response) => {
             const accountId = req.params.accountId as string;
-            const output = await accountService.getAccount(accountId);
+            const output = await this.getAccount.execute(accountId);
             res.json(output);
         });
 
