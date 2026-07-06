@@ -18,3 +18,15 @@ test("Deve persistir uma ordem", async () => {
     expect(savedOrder.fillQuantity).toBe(order.fillQuantity);
     expect(savedOrder.fillPrice).toBe(order.fillPrice);
 });
+
+test("Deve listar orders por marketId e status", async () => {
+    const marketId = `BTC-USD-${Math.random()}`;
+    const orderRepository = new OrderRepositoryDatabase();
+    const accountId = crypto.randomUUID();
+    const orderBuy = Order.create(accountId, marketId, "buy", 1, 60000);
+    await orderRepository.save(orderBuy);
+    const orderSell = Order.create(accountId, marketId, "sell", 1, 60000);
+    await orderRepository.save(orderSell);
+    const orders = await orderRepository.listByMarketIdAndStatus(marketId, "open");
+    expect(orders).toHaveLength(2);
+});

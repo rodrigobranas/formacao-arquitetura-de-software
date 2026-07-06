@@ -35,3 +35,95 @@ test("Deve criar uma ordem de compra", async () => {
     expect(outputGetOrder.price).toBe(60000);
     expect(outputGetOrder.status).toBe("open");
 });
+
+test("Deve executar uma ordem de compra com uma ordem de venda", async () => {
+    const marketId = `BTC-USD-${Math.random()}`;
+    const accountRepository = new AccountRepositoryDatabase();
+    const orderRepository = new OrderRepositoryDatabase();
+    const signup = new Signup(accountRepository);
+    const placeOrder = new PlaceOrder(accountRepository, orderRepository);
+    const getOrder = new GetOrder(orderRepository);
+    const inputSignup = {
+        name: "John Doe",
+        email: "john.doe@gmail.com",
+        document: "97456321558",
+        password: "asdQWE123"
+    }
+    const outputSignup = await signup.execute(inputSignup);
+    const inputPlaceOrderBuy = {
+        accountId: outputSignup.accountId,
+        marketId,
+        side: "buy",
+        quantity: 1,
+        price: 60000
+    }
+    const outputPlaceOrderBuy = await placeOrder.execute(inputPlaceOrderBuy);
+    const inputPlaceOrderSell = {
+        accountId: outputSignup.accountId,
+        marketId,
+        side: "sell",
+        quantity: 1,
+        price: 60000
+    }
+    const outputPlaceOrderSell = await placeOrder.execute(inputPlaceOrderSell);
+    const outputGetOrderBuy = await getOrder.execute(outputPlaceOrderBuy.orderId);
+    const outputGetOrderSell = await getOrder.execute(outputPlaceOrderSell.orderId);
+    expect(outputGetOrderBuy.fillQuantity).toBe(1);
+    expect(outputGetOrderBuy.fillPrice).toBe(60000);
+    expect(outputGetOrderBuy.status).toBe("closed");
+    expect(outputGetOrderSell.fillQuantity).toBe(1);
+    expect(outputGetOrderSell.fillPrice).toBe(60000);
+    expect(outputGetOrderSell.status).toBe("closed");
+});
+
+test.only("Deve executar uma ordem de compra com duas ordens de venda", async () => {
+    const marketId = `BTC-USD-${Math.random()}`;
+    const accountRepository = new AccountRepositoryDatabase();
+    const orderRepository = new OrderRepositoryDatabase();
+    const signup = new Signup(accountRepository);
+    const placeOrder = new PlaceOrder(accountRepository, orderRepository);
+    const getOrder = new GetOrder(orderRepository);
+    const inputSignup = {
+        name: "John Doe",
+        email: "john.doe@gmail.com",
+        document: "97456321558",
+        password: "asdQWE123"
+    }
+    const outputSignup = await signup.execute(inputSignup);
+    const inputPlaceOrderBuy = {
+        accountId: outputSignup.accountId,
+        marketId,
+        side: "buy",
+        quantity: 2,
+        price: 60000
+    }
+    const outputPlaceOrderBuy = await placeOrder.execute(inputPlaceOrderBuy);
+    const inputPlaceOrderSell1 = {
+        accountId: outputSignup.accountId,
+        marketId,
+        side: "sell",
+        quantity: 1,
+        price: 60000
+    }
+    const outputPlaceOrderSell1 = await placeOrder.execute(inputPlaceOrderSell1);
+    const inputPlaceOrderSell2 = {
+        accountId: outputSignup.accountId,
+        marketId,
+        side: "sell",
+        quantity: 1,
+        price: 60000
+    }
+    const outputPlaceOrderSell2 = await placeOrder.execute(inputPlaceOrderSell2);
+    const outputGetOrderBuy = await getOrder.execute(outputPlaceOrderBuy.orderId);
+    const outputGetOrderSell1 = await getOrder.execute(outputPlaceOrderSell1.orderId);
+    const outputGetOrderSell2 = await getOrder.execute(outputPlaceOrderSell2.orderId);
+    expect(outputGetOrderBuy.fillQuantity).toBe(2);
+    expect(outputGetOrderBuy.fillPrice).toBe(60000);
+    expect(outputGetOrderBuy.status).toBe("closed");
+    expect(outputGetOrderSell1.fillQuantity).toBe(1);
+    expect(outputGetOrderSell1.fillPrice).toBe(60000);
+    expect(outputGetOrderSell1.status).toBe("closed");
+    expect(outputGetOrderSell2.fillQuantity).toBe(1);
+    expect(outputGetOrderSell2.fillPrice).toBe(60000);
+    expect(outputGetOrderSell2.status).toBe("closed");
+});

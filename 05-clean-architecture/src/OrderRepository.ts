@@ -7,6 +7,7 @@ export default interface OrderRepository {
     save (order: Order): Promise<void>;
     update (order: Order): Promise<void>;
     getById (orderId: string): Promise<Order>;
+    listByMarketIdAndStatus (marketId: string, status: string): Promise<Order[]>;
 }
 
 export class OrderRepositoryDatabase implements OrderRepository {
@@ -29,6 +30,18 @@ export class OrderRepositoryDatabase implements OrderRepository {
         const order = new Order(orderData.order_id, orderData.account_id, orderData.market_id, orderData.side, parseFloat(orderData.quantity), parseFloat(orderData.price), parseFloat(orderData.fill_quantity), parseFloat(orderData.fill_price), orderData.status, orderData.timestamp);
         await connection.$pool.end();
         return order;
+    }
+
+    async listByMarketIdAndStatus (marketId: string, status: string): Promise<Order[]> {
+        const connection = pgp()("postgres://postgres:123456@localhost:5432/app");
+        const ordersData = await connection.query("select * from app.order where market_id = $1 and status = $2", [marketId, status]);
+        await connection.$pool.end();
+        const orders: Order[] = [];
+        for (const orderData of ordersData) {
+            const order = new Order(orderData.order_id, orderData.account_id, orderData.market_id, orderData.side, parseFloat(orderData.quantity), parseFloat(orderData.price), parseFloat(orderData.fill_quantity), parseFloat(orderData.fill_price), orderData.status, orderData.timestamp);
+            orders.push(order);
+        }
+        return orders;
     }
 
 }
