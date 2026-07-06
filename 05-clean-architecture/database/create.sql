@@ -16,3 +16,17 @@ create table app.balance (
     quantity numeric,
     primary key (account_id, asset_id)
 );
+
+create table app.order (
+    order_id uuid,
+    account_id uuid,
+    market_id text,
+    side text,
+    quantity numeric,
+    price numeric,
+    fill_quantity numeric,
+    fill_price numeric,
+    status text,
+    timestamp timestamptz,
+    primary key (order_id)
+);
