@@ -1,4 +1,4 @@
-import { test, expect } from "vitest";
+import { test, expect, beforeEach, afterEach } from "vitest";
 import sinon from "sinon";
 import { PaymentGatewayFake, PaymentGatewayHttp } from "../../src/PaymentGateway.ts";
 import { AccountRepositoryDatabase, AccountRepositoryFake } from "../../src/AccountRepository.ts";
@@ -6,9 +6,20 @@ import Account from "../../src/Account.ts";
 import { Signup } from "../../src/Signup.ts";
 import { GetAccount } from "../../src/GetAccount.ts";
 import { Deposit } from "../../src/Deposit.ts";
+import type DatabaseConnection from "../../src/DatabaseConnection.ts";
+import type AccountRepository from "../../src/AccountRepository.ts";
+import { PgPromiseAdapter } from "../../src/DatabaseConnection.ts";
+import { AxiosAdapter } from "../../src/HttpClient.ts";
+
+let databaseConnection: DatabaseConnection;
+let accountRepository: AccountRepository;
+
+beforeEach(async () => {
+    databaseConnection = new PgPromiseAdapter();
+    accountRepository = new AccountRepositoryDatabase(databaseConnection);
+}); 
 
 test("Deve fazer dois depósitos do mesmo tipo de recurso em uma conta", async () => {
-    const accountRepository = new AccountRepositoryDatabase();
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
@@ -37,8 +48,8 @@ test("Deve fazer dois depósitos do mesmo tipo de recurso em uma conta", async (
 });
 
 test("Deve fazer um depósito em uma conta spy", async () => {
-    const accountRepository = new AccountRepositoryDatabase();
-    const paymentGateway = new PaymentGatewayHttp();
+    const httpClient = new AxiosAdapter();
+    const paymentGateway = new PaymentGatewayHttp(httpClient);
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
     const deposit = new Deposit(accountRepository, paymentGateway);
@@ -75,8 +86,8 @@ test("Deve fazer um depósito em uma conta spy", async () => {
 });
 
 test("Deve fazer um depósito em uma conta mock", async () => {
-    const accountRepository = new AccountRepositoryDatabase();
-    const paymentGateway = new PaymentGatewayHttp();
+    const httpClient = new AxiosAdapter();
+    const paymentGateway = new PaymentGatewayHttp(httpClient);
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
     const deposit = new Deposit(accountRepository, paymentGateway);
@@ -150,7 +161,6 @@ test("Deve fazer um depósito em uma conta com fake", async () => {
 });
 
 test("Não deve fazer depósito em uma conta que não existe", async () => {
-    const accountRepository = new AccountRepositoryDatabase();
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
@@ -165,4 +175,8 @@ test("Não deve fazer depósito em uma conta que não existe", async () => {
         creditCardCvv: "123"
     }
     await expect(() => deposit.execute(inputDeposit)).rejects.toThrow(new Error("Account not found"));
+});
+
+afterEach(async () => {
+    await databaseConnection.close(); 
 });

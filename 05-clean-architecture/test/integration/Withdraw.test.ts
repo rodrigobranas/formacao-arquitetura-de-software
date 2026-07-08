@@ -1,4 +1,4 @@
-import { test, expect } from "vitest";
+import { test, expect, beforeEach, afterEach } from "vitest";
 import { PaymentGatewayFake, PaymentGatewayHttp } from "../../src/PaymentGateway.ts";
 import { AccountRepositoryDatabase, AccountRepositoryFake } from "../../src/AccountRepository.ts";
 
@@ -6,9 +6,19 @@ import { Signup } from "../../src/Signup.ts";
 import { GetAccount } from "../../src/GetAccount.ts";
 import { Deposit } from "../../src/Deposit.ts";
 import { Withdraw } from "../../src/Withdraw.ts";
+import type AccountRepository from "../../src/AccountRepository.ts";
+import type DatabaseConnection from "../../src/DatabaseConnection.ts";
+import { PgPromiseAdapter } from "../../src/DatabaseConnection.ts";
+
+let databaseConnection: DatabaseConnection;
+let accountRepository: AccountRepository;
+
+beforeEach(async () => {
+    databaseConnection = new PgPromiseAdapter();
+    accountRepository = new AccountRepositoryDatabase(databaseConnection);
+}); 
 
 test("Deve fazer um saque na conta", async () => {
-    const accountRepository = new AccountRepositoryDatabase();
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
@@ -43,7 +53,6 @@ test("Deve fazer um saque na conta", async () => {
 });
 
 test("Não deve fazer um saque em uma conta que não existe", async () => {
-    const accountRepository = new AccountRepositoryDatabase();
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
@@ -58,7 +67,6 @@ test("Não deve fazer um saque em uma conta que não existe", async () => {
 });
 
 test("Não deve fazer um saque de uma conta sem saldo suficiente", async () => {
-    const accountRepository = new AccountRepositoryDatabase();
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
@@ -87,4 +95,8 @@ test("Não deve fazer um saque de uma conta sem saldo suficiente", async () => {
         quantity: 100
     }
     await expect(() => withdraw.execute(inputWithdraw)).rejects.toThrow(new Error("Out of balance"));
+});
+
+afterEach(async () => {
+    await databaseConnection.close(); 
 });
