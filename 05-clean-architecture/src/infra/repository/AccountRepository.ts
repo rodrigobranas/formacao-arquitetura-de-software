@@ -1,6 +1,5 @@
-import Account, { type Balance } from "./Account.ts";
-import type DatabaseConnection from "./DatabaseConnection.ts";
-
+import Account, { type Balance } from "../../domain/Account.ts";
+import type DatabaseConnection from "../database/DatabaseConnection.ts";
 
 export default interface AccountRepository {
     save (account: Account): Promise<void>;

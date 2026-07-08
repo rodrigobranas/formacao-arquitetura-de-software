@@ -1,6 +1,6 @@
-import type GetOrder from "./GetOrder.ts";
-import type HttpServer from "./HttpServer.ts";
-import type PlaceOrder from "./PlaceOrder.ts";
+import type GetOrder from "../../application/usecase/GetOrder.ts";
+import type PlaceOrder from "../../application/usecase/PlaceOrder.ts";
+import type HttpServer from "../http/HttpServer.ts";
 
 export default class OrderController {
 

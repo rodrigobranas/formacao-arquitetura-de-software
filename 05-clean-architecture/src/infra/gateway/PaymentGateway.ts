@@ -1,4 +1,4 @@
-import type HttpClient from "./HttpClient.ts";
+import type HttpClient from "../http/HttpClient.ts";
 
 export default interface PaymentGateway {
     processTransaction (input: Input): Promise<any>;

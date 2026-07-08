@@ -1,4 +1,4 @@
-import type AccountRepository from "./AccountRepository.ts";
+import type AccountRepository from "../../infra/repository/AccountRepository.ts";
 import type UseCase from "./UseCase.ts";
 
 export class Withdraw implements UseCase {

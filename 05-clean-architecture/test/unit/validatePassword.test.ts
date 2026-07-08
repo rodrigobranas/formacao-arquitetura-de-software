@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
-import { validateEmail } from "../../src/validateEmail.ts";
-import { validatePassword } from "../../src/validatePassword.ts";
+import { validateEmail } from "../../src/domain/validateEmail.ts";
+import { validatePassword } from "../../src/domain/validatePassword.ts";
 
 test("Deve validar a senha", () => {
     const password = "asdQWE123";

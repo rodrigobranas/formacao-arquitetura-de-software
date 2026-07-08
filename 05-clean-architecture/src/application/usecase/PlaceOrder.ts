@@ -1,7 +1,7 @@
-import type AccountRepository from "./AccountRepository.ts";
-import type Mediator from "./Mediator.ts";
-import Order from "./Order.ts";
-import type OrderRepository from "./OrderRepository.ts";
+import Order from "../../domain/Order.ts";
+import type Mediator from "../../infra/handler/Mediator.ts";
+import type AccountRepository from "../../infra/repository/AccountRepository.ts";
+import type OrderRepository from "../../infra/repository/OrderRepository.ts";
 import type UseCase from "./UseCase.ts";
 
 export default class PlaceOrder implements UseCase {

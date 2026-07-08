@@ -1,4 +1,4 @@
-import type AccountRepository from "./AccountRepository.ts";
+import type AccountRepository from "../../infra/repository/AccountRepository.ts";
 import type UseCase from "./UseCase.ts";
 
 export class GetAccount implements UseCase {
@@ -16,7 +16,7 @@ export class GetAccount implements UseCase {
             email: account.email,
             document: account.document,
             password: account.password,
-            balances: account.balances.map((balance) => ({ assetId: balance.assetId, quantity: balance.quantity }))
+            balances: account.balances.map((balance: any) => ({ assetId: balance.assetId, quantity: balance.quantity }))
         }
         return output;
     }

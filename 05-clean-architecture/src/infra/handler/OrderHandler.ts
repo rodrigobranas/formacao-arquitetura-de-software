@@ -1,4 +1,4 @@
-import type ExecuteOrder from "./ExecuteOrder.ts";
+import type ExecuteOrder from "../../application/usecase/ExecuteOrder.ts";
 import type Mediator from "./Mediator.ts";
 
 export default class OrderHandler {

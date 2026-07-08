@@ -1,6 +1,6 @@
-import type { GetAccount } from "./GetAccount.ts";
-import type HttpServer from "./HttpServer.ts";
-import type { Signup } from "./Signup.ts";
+import type { GetAccount } from "../../application/usecase/GetAccount.ts";
+import type { Signup } from "../../application/usecase/Signup.ts";
+import type HttpServer from "../http/HttpServer.ts";
 
 export default class AccountController {
 

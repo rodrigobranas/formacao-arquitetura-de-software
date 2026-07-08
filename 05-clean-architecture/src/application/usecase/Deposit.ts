@@ -1,5 +1,5 @@
-import type AccountRepository from "./AccountRepository.ts";
-import type PaymentGateway from "./PaymentGateway.ts";
+import type PaymentGateway from "../../infra/gateway/PaymentGateway.ts";
+import type AccountRepository from "../../infra/repository/AccountRepository.ts";
 import type UseCase from "./UseCase.ts";
 
 export class Deposit implements UseCase {

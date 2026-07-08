@@ -1,5 +1,5 @@
-import Order from "./Order.ts";
-import type OrderRepository from "./OrderRepository.ts";
+import Order from "../../domain/Order.ts";
+import type OrderRepository from "../../infra/repository/OrderRepository.ts";
 import type UseCase from "./UseCase.ts";
 
 export default class ExecuteOrder implements UseCase {

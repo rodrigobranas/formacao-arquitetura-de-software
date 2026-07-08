@@ -1,10 +1,10 @@
-import { test, expect, beforeEach, afterEach } from "vitest";
-import { AccountRepositoryDatabase, AccountRepositoryFake } from "../../src/AccountRepository.ts";
-import { Signup } from "../../src/Signup.ts";
-import { GetAccount } from "../../src/GetAccount.ts";
-import type AccountRepository from "../../src/AccountRepository.ts";
-import type DatabaseConnection from "../../src/DatabaseConnection.ts";
-import { PgPromiseAdapter } from "../../src/DatabaseConnection.ts";
+import { beforeEach, test, expect, afterEach } from "vitest";
+import { GetAccount } from "../../src/application/usecase/GetAccount.ts";
+import { Signup } from "../../src/application/usecase/Signup.ts";
+import type DatabaseConnection from "../../src/infra/database/DatabaseConnection.ts";
+import { PgPromiseAdapter } from "../../src/infra/database/DatabaseConnection.ts";
+import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
+import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;

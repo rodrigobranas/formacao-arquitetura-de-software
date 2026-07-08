@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { validateEmail } from "../../src/validateEmail.ts";
+import { validateEmail } from "../../src/domain/validateEmail.ts";
 
 test("Deve validar o email", () => {
     const email = "john.doe@gmail.com";

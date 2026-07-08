@@ -1,5 +1,5 @@
-import type DatabaseConnection from "./DatabaseConnection.ts";
-import Order from "./Order.ts";
+import Order from "../../domain/Order.ts";
+import type DatabaseConnection from "../database/DatabaseConnection.ts";
 
 export default interface OrderRepository {
     save (order: Order): Promise<void>;

@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { validateName } from "../../src/validateName.ts";
+import { validateName } from "../../src/domain/validateName.ts";
 
 test("Deve validar o nome", () => {
     const name = "John Doe";

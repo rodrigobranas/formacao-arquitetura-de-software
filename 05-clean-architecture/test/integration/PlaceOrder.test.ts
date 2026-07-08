@@ -1,15 +1,16 @@
-import { test, expect, beforeEach, afterEach } from "vitest";
-import { AccountRepositoryDatabase } from "../../src/AccountRepository.ts";
-import { Signup } from "../../src/Signup.ts";
-import { OrderRepositoryDatabase } from "../../src/OrderRepository.ts";
-import PlaceOrder from "../../src/PlaceOrder.ts";
-import GetOrder from "../../src/GetOrder.ts";
-import Mediator from "../../src/Mediator.ts";
-import ExecuteOrder from "../../src/ExecuteOrder.ts";
-import type AccountRepository from "../../src/AccountRepository.ts";
-import type DatabaseConnection from "../../src/DatabaseConnection.ts";
-import { PgPromiseAdapter } from "../../src/DatabaseConnection.ts";
-import type OrderRepository from "../../src/OrderRepository.ts";
+import { beforeEach, test, expect, afterEach } from "vitest";
+import ExecuteOrder from "../../src/application/usecase/ExecuteOrder.ts";
+import GetOrder from "../../src/application/usecase/GetOrder.ts";
+import PlaceOrder from "../../src/application/usecase/PlaceOrder.ts";
+import { Signup } from "../../src/application/usecase/Signup.ts";
+import type DatabaseConnection from "../../src/infra/database/DatabaseConnection.ts";
+import { PgPromiseAdapter } from "../../src/infra/database/DatabaseConnection.ts";
+import Mediator from "../../src/infra/handler/Mediator.ts";
+import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
+import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository.ts";
+import type OrderRepository from "../../src/infra/repository/OrderRepository.ts";
+import { OrderRepositoryDatabase } from "../../src/infra/repository/OrderRepository.ts";
+
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;

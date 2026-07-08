@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, expect, test } from "vitest";
-import Account from "../../src/Account.ts";
-import { AccountRepositoryDatabase } from "../../src/AccountRepository.ts";
-import { PgPromiseAdapter } from "../../src/DatabaseConnection.ts";
-import type AccountRepository from "../../src/AccountRepository.ts";
-import type DatabaseConnection from "../../src/DatabaseConnection.ts";
+import { beforeEach, test, expect, afterEach } from "vitest";
+import Account from "../../src/domain/Account.ts";
+import type DatabaseConnection from "../../src/infra/database/DatabaseConnection.ts";
+import { PgPromiseAdapter } from "../../src/infra/database/DatabaseConnection.ts";
+import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
+import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;

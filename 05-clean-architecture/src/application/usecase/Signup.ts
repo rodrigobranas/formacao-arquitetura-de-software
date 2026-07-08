@@ -1,5 +1,5 @@
-import type AccountRepository from "./AccountRepository.ts";
-import Account from "./Account.ts";
+import Account from "../../domain/Account.ts";
+import type AccountRepository from "../../infra/repository/AccountRepository.ts";
 import type UseCase from "./UseCase.ts";
 
 export class Signup implements UseCase {
