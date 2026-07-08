@@ -1,9 +1,19 @@
-import { test, expect } from "vitest";
+import { test, expect, beforeEach, afterEach } from "vitest";
 import Order from "../../src/Order.ts";
 import { OrderRepositoryDatabase } from "../../src/OrderRepository.ts";
+import type DatabaseConnection from "../../src/DatabaseConnection.ts";
+import type OrderRepository from "../../src/OrderRepository.ts";
+import { PgPromiseAdapter } from "../../src/DatabaseConnection.ts";
+
+let databaseConnection: DatabaseConnection;
+let orderRepository: OrderRepository;
+
+beforeEach(async () => {
+    databaseConnection = new PgPromiseAdapter();
+    orderRepository = new OrderRepositoryDatabase(databaseConnection);
+});
 
 test("Deve persistir uma ordem", async () => {
-    const orderRepository = new OrderRepositoryDatabase();
     const accountId = crypto.randomUUID();
     const order = Order.create(accountId, "BTC-USD", "buy", 1, 60000);
     await orderRepository.save(order);
@@ -21,7 +31,6 @@ test("Deve persistir uma ordem", async () => {
 
 test("Deve listar orders por marketId e status", async () => {
     const marketId = `BTC-USD-${Math.random()}`;
-    const orderRepository = new OrderRepositoryDatabase();
     const accountId = crypto.randomUUID();
     const orderBuy = Order.create(accountId, marketId, "buy", 1, 60000);
     await orderRepository.save(orderBuy);
@@ -29,4 +38,8 @@ test("Deve listar orders por marketId e status", async () => {
     await orderRepository.save(orderSell);
     const orders = await orderRepository.listByMarketIdAndStatus(marketId, "open");
     expect(orders).toHaveLength(2);
+});
+
+afterEach(async () => {
+    await databaseConnection.close();
 });
