@@ -25,3 +25,23 @@ export class AxiosAdapter implements HttpClient {
     }
 
 }
+
+export class FetchAdapter implements HttpClient {
+
+    async get(url: string): Promise<any> {
+        const response = await fetch(url);
+        const output = await response.json();
+        return output;
+    }
+
+    async post(url: string, body: any, headers: any): Promise<any> {
+        const response = await fetch(url, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(body)
+        });
+        const output = await response.json();
+        return output;
+    }
+
+}

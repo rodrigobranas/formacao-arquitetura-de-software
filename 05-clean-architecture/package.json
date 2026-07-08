@@ -23,8 +23,10 @@
     "vitest": "^4.1.9"
   },
   "dependencies": {
+    "@hapi/hapi": "^21.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/hapi__hapi": "^20.0.13",
     "axios": "^1.18.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",

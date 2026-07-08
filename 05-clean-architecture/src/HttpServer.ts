@@ -1,5 +1,6 @@
-import express, { type Request, type Response } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
+import Hapi, { type Request as HapiRequest, type ResponseToolkit } from "@hapi/hapi";
 
 export default interface HttpServer {
     route (method: string, url: string, callback: Function): void;
@@ -7,7 +8,7 @@ export default interface HttpServer {
 }
 
 export class ExpressAdapter implements HttpServer {
-    app: any;
+    app: Express;
 
     constructor () {
         this.app = express();
@@ -15,8 +16,8 @@ export class ExpressAdapter implements HttpServer {
         this.app.use(cors());
     }
 
-    route(method: string, url: string, callback: Function): void {
-        this.app[method](url, async (req: Request, res: Response) => {
+    route(method: "get" | "post", url: string, callback: Function): void {
+        this.app[method](url.replace(/\{|\}/g, ""), async (req: Request, res: Response) => {
             try {
                 const output = await callback(req.params, req.body);
                 res.json(output);
@@ -30,6 +31,37 @@ export class ExpressAdapter implements HttpServer {
 
     listen(port: number): void {
         this.app.listen(port);
+    }
+
+}
+
+export class HapiAdapter implements HttpServer {
+    server: Hapi.Server;
+
+    constructor () {
+        this.server = Hapi.server({});
+    }
+
+    route(method: "get" | "post", url: string, callback: Function): void {
+        this.server.route({
+            method,
+            path: url.replace(/\:/g, ""),
+            async handler (req: HapiRequest, reply: ResponseToolkit) {
+                try {
+                    const output = await callback(req.params, req.payload);
+                    return output;
+                } catch (e: any) {
+                    return reply.response({
+                        error: e.message
+                    }).code(422);
+                }
+            }
+        });
+    }
+
+    listen(port: number): void {
+        this.server.settings.port = port;
+        this.server.start();
     }
 
 }

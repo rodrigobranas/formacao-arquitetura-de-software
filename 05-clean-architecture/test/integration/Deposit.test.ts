@@ -9,7 +9,7 @@ import { Deposit } from "../../src/Deposit.ts";
 import type DatabaseConnection from "../../src/DatabaseConnection.ts";
 import type AccountRepository from "../../src/AccountRepository.ts";
 import { PgPromiseAdapter } from "../../src/DatabaseConnection.ts";
-import { AxiosAdapter } from "../../src/HttpClient.ts";
+import { AxiosAdapter, FetchAdapter } from "../../src/HttpClient.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;
@@ -48,7 +48,8 @@ test("Deve fazer dois depósitos do mesmo tipo de recurso em uma conta", async (
 });
 
 test("Deve fazer um depósito em uma conta spy", async () => {
-    const httpClient = new AxiosAdapter();
+    // const httpClient = new AxiosAdapter();
+    const httpClient = new FetchAdapter();
     const paymentGateway = new PaymentGatewayHttp(httpClient);
     const signup = new Signup(accountRepository);
     const getAccount = new GetAccount(accountRepository);
