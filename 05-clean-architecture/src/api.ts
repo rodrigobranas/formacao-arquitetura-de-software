@@ -1,5 +1,3 @@
-// Driven Adapter
-
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import type { Signup } from "./Signup.ts";

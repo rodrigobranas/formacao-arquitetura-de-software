@@ -1,10 +1,13 @@
-import axios from "axios";
+import type HttpClient from "./HttpClient.ts";
 
 export default interface PaymentGateway {
     processTransaction (input: Input): Promise<any>;
 }
 
 export class PaymentGatewayHttp implements PaymentGateway {
+
+	constructor (readonly httpClient: HttpClient) {
+	}
 
     async processTransaction (input: Input): Promise<any> {
         const [month, year] = input.creditCardExpDate.split("/");
@@ -17,16 +20,11 @@ export class PaymentGatewayHttp implements PaymentGateway {
 			codigo_cvv: input.creditCardCvv,
 			email_cartao: "api@pjbank.com.br"
 		};
-		const responseCreateToken = await axios({
-			url: `https://sandbox.pjbank.com.br/recebimentos/e0727263cc7a983f0aae5411ad86c5a144b8ed28/tokens`,
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json;charset=UTF-8",
-				"X-CHAVE": "e9db986de751de918ca19a1c377f0b7c313915f8"
-			},
-			data: creditCard
-		});
-        const outputCreateToken = responseCreateToken.data;
+		const headers = {
+			"Content-Type": "application/json;charset=UTF-8",
+			"X-CHAVE": "e9db986de751de918ca19a1c377f0b7c313915f8"
+		};
+		const outputCreateToken = await this.httpClient.post(`https://sandbox.pjbank.com.br/recebimentos/e0727263cc7a983f0aae5411ad86c5a144b8ed28/tokens`, creditCard, headers);
 		let transaction = {
 			pedido_numero: "1",
 			token_cartao: outputCreateToken.token_cartao,
@@ -34,16 +32,7 @@ export class PaymentGatewayHttp implements PaymentGateway {
 			parcelas: 1,
 			descricao_pagamento: ""
 		};
-		const responseCreateTransaction = await axios({
-			url: `https://sandbox.pjbank.com.br/recebimentos/e0727263cc7a983f0aae5411ad86c5a144b8ed28/transacoes`,
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json;charset=UTF-8",
-				"X-CHAVE": "e9db986de751de918ca19a1c377f0b7c313915f8"
-			},
-			data: transaction
-		});
-        const outputCreateTransaction = responseCreateTransaction.data;
+		const outputCreateTransaction = await this.httpClient.post(`https://sandbox.pjbank.com.br/recebimentos/e0727263cc7a983f0aae5411ad86c5a144b8ed28/transacoes`, transaction, headers);
         return outputCreateTransaction;
     }
 }
