@@ -15,8 +15,10 @@ export default class Order {
     }
 
     fill (quantity: number, price: number) {
+        const actualAmount = this.fillQuantity * this.fillPrice;
+        const newAmount = quantity * price;
         this.fillQuantity += quantity;
-        this.fillPrice = price;
+        this.fillPrice = (actualAmount + newAmount)/this.fillQuantity;
         if (this.quantity === this.fillQuantity) {
             this.status = "closed";
         }
