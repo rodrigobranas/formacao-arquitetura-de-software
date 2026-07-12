@@ -19,9 +19,9 @@ test("Deve persistir uma conta", async () => {
     const savedAccount = await accountRepository.getById(account.accountId);
     expect(savedAccount.accountId).toBe(account.accountId);
     expect(savedAccount.getName()).toBe(account.getName());
-    expect(savedAccount.email).toBe(account.email);
-    expect(savedAccount.document).toBe(account.document);
-    expect(savedAccount.password).toBe(account.password);
+    expect(savedAccount.getEmail()).toBe(account.getEmail());
+    expect(savedAccount.getDocument()).toBe(account.getDocument());
+    expect(savedAccount.getPassword()).toBe(account.getPassword());
 });
 
 test("Deve persistir uma conta com recursos", async () => {

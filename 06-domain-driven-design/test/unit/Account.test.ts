@@ -6,9 +6,9 @@ test("Deve criar uma conta", () => {
     expect(account).toBeDefined();
     expect(account.accountId).toBeDefined();
     expect(account.getName()).toBe("John Doe");
-    expect(account.email).toBe("john.doe@gmail.com");
-    expect(account.document).toBe("71428793860");
-    expect(account.password).toBe("asdQWE123");
+    expect(account.getEmail()).toBe("john.doe@gmail.com");
+    expect(account.getDocument()).toBe("71428793860");
+    expect(account.getPassword()).toBe("asdQWE123");
     expect(account.balances).toEqual([]);
 });
 
@@ -19,9 +19,9 @@ test("Deve restaurar o estado de uma conta", () => {
     expect(account).toBeDefined();
     expect(account.accountId).toBeDefined();
     expect(account.getName()).toBe("John Doe");
-    expect(account.email).toBe("john.doe@gmail.com");
-    expect(account.document).toBe("71428793860");
-    expect(account.password).toBe("asdQWE123");
+    expect(account.getEmail()).toBe("john.doe@gmail.com");
+    expect(account.getDocument()).toBe("71428793860");
+    expect(account.getPassword()).toBe("asdQWE123");
     expect(account.balances).toEqual([]);
 });
 

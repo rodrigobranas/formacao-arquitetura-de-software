@@ -13,9 +13,9 @@ export class GetAccount implements UseCase {
         const output = {
             accountId: account.accountId,
             name: account.getName(),
-            email: account.email,
-            document: account.document,
-            password: account.password,
+            email: account.getEmail(),
+            document: account.getDocument(),
+            password: account.getPassword(),
             balances: account.balances.map((balance: any) => ({ assetId: balance.assetId, quantity: balance.quantity }))
         }
         return output;
