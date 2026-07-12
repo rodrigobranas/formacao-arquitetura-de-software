@@ -1,10 +1,11 @@
 import { test, expect } from "vitest";
 import Account, { type Balance } from "../../src/domain/Account.ts";
+import UUID from "../../src/domain/UUID.ts";
 
 test("Deve criar uma conta", () => {
     const account = Account.create("John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123");
     expect(account).toBeDefined();
-    expect(account.accountId).toBeDefined();
+    expect(account.getAccountId()).toBeDefined();
     expect(account.getName()).toBe("John Doe");
     expect(account.getEmail()).toBe("john.doe@gmail.com");
     expect(account.getDocument()).toBe("71428793860");
@@ -13,11 +14,11 @@ test("Deve criar uma conta", () => {
 });
 
 test("Deve restaurar o estado de uma conta", () => {
-    const accountId = crypto.randomUUID();
+    const accountId = UUID.create().getValue();
     const balances: Balance[] = [];
     const account = new Account(accountId, "John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123", balances);
     expect(account).toBeDefined();
-    expect(account.accountId).toBeDefined();
+    expect(account.getAccountId()).toBeDefined();
     expect(account.getName()).toBe("John Doe");
     expect(account.getEmail()).toBe("john.doe@gmail.com");
     expect(account.getDocument()).toBe("71428793860");

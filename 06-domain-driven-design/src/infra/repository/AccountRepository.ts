@@ -14,16 +14,16 @@ export class AccountRepositoryDatabase implements AccountRepository {
     }
 
     async save (account: Account): Promise<void> {
-        await this.databaseConnection.query("insert into app.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)", [account.accountId, account.getName(), account.getEmail(), account.getDocument(), account.getPassword()]);
+        await this.databaseConnection.query("insert into app.account (account_id, name, email, document, password) values ($1, $2, $3, $4, $5)", [account.getAccountId(), account.getName(), account.getEmail(), account.getDocument(), account.getPassword()]);
         for (const balance of account.balances) {
-            await this.databaseConnection.query("insert into app.balance (account_id, asset_id, quantity) values ($1, $2, $3) on conflict (account_id, asset_id) do update set quantity = excluded.quantity", [account.accountId, balance.assetId, balance.quantity]);
+            await this.databaseConnection.query("insert into app.balance (account_id, asset_id, quantity) values ($1, $2, $3) on conflict (account_id, asset_id) do update set quantity = excluded.quantity", [account.getAccountId(), balance.assetId, balance.quantity]);
         }
     }
 
     async update (account: Account): Promise<void> {
-        await this.databaseConnection.query("update app.account set name = $1, email = $2, document = $3, password = $4 where account_id = $5", [account.getName(), account.getEmail(), account.getDocument(), account.getPassword(), account.accountId]);
+        await this.databaseConnection.query("update app.account set name = $1, email = $2, document = $3, password = $4 where account_id = $5", [account.getName(), account.getEmail(), account.getDocument(), account.getPassword(), account.getAccountId()]);
         for (const balance of account.balances) {
-            await this.databaseConnection.query("insert into app.balance (account_id, asset_id, quantity) values ($1, $2, $3) on conflict (account_id, asset_id) do update set quantity = excluded.quantity", [account.accountId, balance.assetId, balance.quantity]);
+            await this.databaseConnection.query("insert into app.balance (account_id, asset_id, quantity) values ($1, $2, $3) on conflict (account_id, asset_id) do update set quantity = excluded.quantity", [account.getAccountId(), balance.assetId, balance.quantity]);
         }
     }
 
@@ -65,7 +65,7 @@ export class AccountRepositoryFake implements AccountRepository {
     }
 
     async getById(accountId: string): Promise<Account> {
-        const account = this.accounts.find((account: Account) => account.accountId === accountId);
+        const account = this.accounts.find((account: Account) => account.getAccountId() === accountId);
         if (!account) throw new Error("Account not found");
         return account;
     }

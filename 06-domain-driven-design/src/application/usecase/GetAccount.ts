@@ -11,7 +11,7 @@ export class GetAccount implements UseCase {
     async execute (accountId: string): Promise<Output> {
         const account = await this.accountRepository.getById(accountId);
         const output = {
-            accountId: account.accountId,
+            accountId: account.getAccountId(),
             name: account.getName(),
             email: account.getEmail(),
             document: account.getDocument(),

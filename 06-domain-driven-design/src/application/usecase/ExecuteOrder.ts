@@ -22,7 +22,7 @@ export default class ExecuteOrder implements UseCase {
             lowestSell.fill(quantity, price);
             await this.orderRepository.update(highestBuy);
             await this.orderRepository.update(lowestSell);
-            const trade = Trade.create(marketId, highestBuy.orderId, lowestSell.orderId, side, quantity, price);
+            const trade = Trade.create(marketId, highestBuy.getOrderId(), lowestSell.getOrderId(), side, quantity, price);
             await this.tradeRepository.save(trade);
         }
     }

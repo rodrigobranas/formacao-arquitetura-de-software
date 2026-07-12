@@ -1,16 +1,18 @@
-import crypto from "crypto";
 import Name from "./Name.ts";
 import Email from "./Email.ts";
 import Cpf from "./Cpf.ts";
 import Password from "./Password.ts";
+import UUID from "./UUID.ts";
 
 export default class Account {
+    private accountId: UUID;
     private name: Name;
     private email: Email;
     private document: Cpf;
     private password: Password;
 
-    constructor (readonly accountId: string, name: string, email: string, document: string, password: string, readonly balances: Balance[]) {
+    constructor (accountId: string, name: string, email: string, document: string, password: string, readonly balances: Balance[]) {
+        this.accountId = new UUID(accountId);
         this.name = new Name(name);
         this.email = new Email(email);
         this.document = new Cpf(document);
@@ -18,9 +20,9 @@ export default class Account {
     }
 
     static create (name: string, email: string, document: string, password: string) {
-        const accountId = crypto.randomUUID();
+        const accountId = UUID.create();
         const balances: Balance[] = [];
-        return new Account(accountId, name, email, document, password, balances);
+        return new Account(accountId.getValue(), name, email, document, password, balances);
     }
 
     deposit (assetId: string, quantity: number) {
@@ -64,6 +66,10 @@ export default class Account {
 
     getPassword () {
         return this.password.getValue();
+    }
+
+    getAccountId () {
+        return this.accountId.getValue();
     }
 }
 

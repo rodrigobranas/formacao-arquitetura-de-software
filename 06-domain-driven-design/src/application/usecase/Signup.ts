@@ -13,7 +13,7 @@ export class Signup implements UseCase {
         const account = Account.create(input.name, input.email, input.document, input.password);
         await this.accountRepository.save(account);
         return {
-            accountId: account.accountId
+            accountId: account.getAccountId()
         };
     }
 }

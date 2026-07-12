@@ -1,5 +1,4 @@
 import { expect, test } from "vitest";
-import { validateEmail } from "../../src/domain/validateEmail.ts";
 import Email from "../../src/domain/Email.ts";
 
 test("Deve validar o email", () => {

@@ -4,6 +4,7 @@ import type DatabaseConnection from "../../src/infra/database/DatabaseConnection
 import { PgPromiseAdapter } from "../../src/infra/database/DatabaseConnection.ts";
 import type OrderRepository from "../../src/infra/repository/OrderRepository.ts";
 import { OrderRepositoryDatabase } from "../../src/infra/repository/OrderRepository.ts";
+import UUID from "../../src/domain/UUID.ts";
 
 let databaseConnection: DatabaseConnection;
 let orderRepository: OrderRepository;
@@ -14,12 +15,12 @@ beforeEach(async () => {
 });
 
 test("Deve persistir uma ordem", async () => {
-    const accountId = crypto.randomUUID();
+    const accountId = UUID.create().getValue();
     const order = Order.create(accountId, "BTC-USD", "buy", 1, 60000);
     await orderRepository.save(order);
-    const savedOrder = await orderRepository.getById(order.orderId);
-    expect(savedOrder.orderId).toBe(order.orderId);
-    expect(savedOrder.accountId).toBe(order.accountId);
+    const savedOrder = await orderRepository.getById(order.getOrderId());
+    expect(savedOrder.getOrderId()).toBe(order.getOrderId());
+    expect(savedOrder.getAccountId()).toBe(order.getAccountId());
     expect(savedOrder.marketId).toBe(order.marketId);
     expect(savedOrder.side).toBe(order.side);
     expect(savedOrder.quantity).toBe(order.quantity);
@@ -31,7 +32,7 @@ test("Deve persistir uma ordem", async () => {
 
 test("Deve listar orders por marketId e status", async () => {
     const marketId = `BTC-USD-${Math.random()}`;
-    const accountId = crypto.randomUUID();
+    const accountId = UUID.create().getValue();
     const orderBuy = Order.create(accountId, marketId, "buy", 1, 60000);
     await orderRepository.save(orderBuy);
     const orderSell = Order.create(accountId, marketId, "sell", 1, 60000);

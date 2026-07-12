@@ -13,9 +13,9 @@ export default class PlaceOrder implements UseCase {
         const account = await this.accountRepository.getById(input.accountId);
         const order = Order.create(input.accountId, input.marketId, input.side, input.quantity, input.price);
         await this.orderRepository.save(order);
-        await this.mediator.notifyAll("orderPlaced", { orderId: order.orderId, marketId: order.marketId });
+        await this.mediator.notifyAll("orderPlaced", { orderId: order.getOrderId(), marketId: order.marketId });
         return {
-            orderId: order.orderId
+            orderId: order.getOrderId()
         }
     }
 }

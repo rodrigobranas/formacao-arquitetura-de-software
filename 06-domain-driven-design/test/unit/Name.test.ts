@@ -1,5 +1,4 @@
 import { expect, test } from "vitest";
-import { validateName } from "../../src/domain/validateName.ts";
 import Name from "../../src/domain/Name.ts";
 
 test("Deve validar o nome", () => {

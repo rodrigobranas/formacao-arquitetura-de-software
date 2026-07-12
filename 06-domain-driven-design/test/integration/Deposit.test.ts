@@ -10,6 +10,7 @@ import { FetchAdapter, AxiosAdapter } from "../../src/infra/http/HttpClient.ts";
 import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
 import { AccountRepositoryDatabase, AccountRepositoryFake } from "../../src/infra/repository/AccountRepository.ts";
 import sinon from "sinon";
+import UUID from "../../src/domain/UUID.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;
@@ -167,7 +168,7 @@ test("Não deve fazer depósito em uma conta que não existe", async () => {
     const getAccount = new GetAccount(accountRepository);
     const deposit = new Deposit(accountRepository, paymentGateway);
     const inputDeposit = {
-        accountId: crypto.randomUUID(),
+        accountId: UUID.create().getValue(),
         assetId: "USD",
         quantity: 100,
         creditCardHolder: "JOHN DOE",

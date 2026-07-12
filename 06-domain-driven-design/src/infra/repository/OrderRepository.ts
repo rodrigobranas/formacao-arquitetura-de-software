@@ -14,11 +14,11 @@ export class OrderRepositoryDatabase implements OrderRepository {
     }
 
     async save (order: Order): Promise<void> {
-        await this.databaseConnection.query("insert into app.order (order_id, account_id, market_id, side, quantity, price, status, fill_quantity, fill_price, timestamp) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", [order.orderId, order.accountId, order.marketId, order.side, order.quantity, order.price, order.status, order.fillQuantity, order.fillPrice, order.timestamp]);
+        await this.databaseConnection.query("insert into app.order (order_id, account_id, market_id, side, quantity, price, status, fill_quantity, fill_price, timestamp) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", [order.getOrderId(), order.getAccountId(), order.marketId, order.side, order.quantity, order.price, order.status, order.fillQuantity, order.fillPrice, order.timestamp]);
     }
 
     async update (order: Order): Promise<void> {
-        await this.databaseConnection.query("update app.order set status = $1, fill_quantity = $2, fill_price = $3 where order_id = $4", [order.status, order.fillQuantity, order.fillPrice, order.orderId]);
+        await this.databaseConnection.query("update app.order set status = $1, fill_quantity = $2, fill_price = $3 where order_id = $4", [order.status, order.fillQuantity, order.fillPrice, order.getOrderId()]);
     }
 
     async getById (orderId: string): Promise<Order> {

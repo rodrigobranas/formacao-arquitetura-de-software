@@ -9,8 +9,8 @@ export default class GetOrder implements UseCase {
     async execute (orderId: string): Promise<Output> {
         const order = await this.orderRepository.getById(orderId);
         return {
-            orderId: order.orderId,
-            accountId: order.accountId,
+            orderId: order.getOrderId(),
+            accountId: order.getAccountId(),
             marketId: order.marketId,
             side: order.side,
             quantity: order.quantity,

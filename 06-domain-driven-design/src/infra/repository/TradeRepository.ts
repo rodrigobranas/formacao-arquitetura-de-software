@@ -13,7 +13,7 @@ export class TradeRepositoryDatabase implements TradeRepository {
     }
 
     async save(trade: Trade): Promise<void> {
-        await this.databaseConnection.query("insert into app.trade (trade_id, market_id, buy_order_id, sell_order_id, side, quantity, price, timestamp) values ($1, $2, $3, $4, $5, $6, $7, $8)", [trade.tradeId, trade.marketId, trade.buyOrderId, trade.sellOrderId, trade.side, trade.quantity, trade.price, trade.timestamp]);
+        await this.databaseConnection.query("insert into app.trade (trade_id, market_id, buy_order_id, sell_order_id, side, quantity, price, timestamp) values ($1, $2, $3, $4, $5, $6, $7, $8)", [trade.getTradeId(), trade.marketId, trade.getBuyOrderId(), trade.getSellOrderId(), trade.side, trade.quantity, trade.price, trade.timestamp]);
     }
 
     async getById(tradeId: string): Promise<Trade> {

@@ -8,6 +8,7 @@ import { PgPromiseAdapter } from "../../src/infra/database/DatabaseConnection.ts
 import { PaymentGatewayFake } from "../../src/infra/gateway/PaymentGateway.ts";
 import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
 import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository.ts";
+import UUID from "../../src/domain/UUID.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;
@@ -58,7 +59,7 @@ test("Não deve fazer um saque em uma conta que não existe", async () => {
     const deposit = new Deposit(accountRepository, paymentGateway);
     const withdraw = new Withdraw(accountRepository);
     const inputWithdraw = {
-        accountId: crypto.randomUUID(),
+        accountId: UUID.create().getValue(),
         assetId: "USD",
         quantity: 50
     }

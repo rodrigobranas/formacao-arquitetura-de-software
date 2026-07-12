@@ -1,8 +1,9 @@
 import { test, expect } from "vitest";
 import Order from "../../src/domain/Order.ts";
+import UUID from "../../src/domain/UUID.ts";
 
 test("Deve criar uma ordem", () => {
-    const accountId = crypto.randomUUID();
+    const accountId = UUID.create().getValue();
     const order = Order.create(accountId, "BTC-USD", "buy", 1, 60000);
     expect(order).toBeDefined();
     expect(order.marketId).toBe("BTC-USD");

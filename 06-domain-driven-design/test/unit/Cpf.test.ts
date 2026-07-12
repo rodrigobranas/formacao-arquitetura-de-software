@@ -1,5 +1,4 @@
 import { expect, test } from "vitest";
-import { validateCpf } from "../../src/domain/validateCpf.ts";
 import Cpf from "../../src/domain/Cpf.ts";
 
 test.each([
