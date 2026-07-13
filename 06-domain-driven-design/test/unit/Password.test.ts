@@ -1,9 +1,19 @@
 import { expect, test } from "vitest";
-import Password from "../../src/domain/Password.ts";
+import { MediumPassword, PasswordFactory, StrongPassword, WeakPassword } from "../../src/domain/Password.ts";
 
-test("Deve validar a senha", () => {
+test("Deve validar a senha fraca", () => {
+    const password = "1";
+    expect(PasswordFactory.create(password, "weak")).toBeDefined();
+});
+
+test("Deve validar a senha média", () => {
     const password = "asdQWE123";
-    expect(new Password(password)).toBeDefined();
+    expect(PasswordFactory.create(password, "medium")).toBeDefined();
+});
+
+test("Deve validar a senha forte", () => {
+    const password = "asdQWEQab123!";
+    expect(PasswordFactory.create(password, "strong")).toBeDefined();
 });
 
 test.each([
@@ -11,5 +21,5 @@ test.each([
     "asdQWE",
     "asdQWE1",
 ])("Não deve ser um senha válido: %s", (password: string) => {
-    expect(() => new Password(password)).toThrow(new Error("Invalid password"));
+    expect(() => PasswordFactory.create(password, "medium")).toThrow(new Error("Invalid password"));
 });

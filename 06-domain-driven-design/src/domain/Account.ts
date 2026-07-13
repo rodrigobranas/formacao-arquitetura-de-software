@@ -1,7 +1,7 @@
 import Name from "./Name.ts";
 import Email from "./Email.ts";
 import Cpf from "./Cpf.ts";
-import Password from "./Password.ts";
+import Password, { MediumPassword } from "./Password.ts";
 import UUID from "./UUID.ts";
 
 export default class Account {
@@ -16,7 +16,7 @@ export default class Account {
         this.name = new Name(name);
         this.email = new Email(email);
         this.document = new Cpf(document);
-        this.password = new Password(password);
+        this.password = new MediumPassword(password);
     }
 
     static create (name: string, email: string, document: string, password: string) {
