@@ -1,5 +1,5 @@
 export default abstract class Password {
-    private value: string;
+    protected value: string;
 
     constructor (password: string) {
         if (!this.validatePassword(password)) throw new Error("Invalid password");
@@ -22,6 +22,7 @@ export class WeakPassword extends Password {
     validatePassword(password: string): boolean {
         return !!password;
     }
+    
 }
 
 export class MediumPassword extends Password {

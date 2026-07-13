@@ -23,3 +23,13 @@ test.each([
 ])("Não deve ser um senha válido: %s", (password: string) => {
     expect(() => PasswordFactory.create(password, "medium")).toThrow(new Error("Invalid password"));
 });
+
+test("Deve verificar a senha", () => {
+    const password = new WeakPassword("asdQWE123");
+    expect(password.check("asdQWE123")).toBe(true);
+});
+
+test("Não deve verificar a senha", () => {
+    const password = new WeakPassword("asdQWE123");
+    expect(password.check("asdQWE")).toBe(false);
+});
