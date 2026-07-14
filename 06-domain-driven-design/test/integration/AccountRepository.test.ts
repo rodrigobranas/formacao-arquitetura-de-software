@@ -3,14 +3,17 @@ import Account from "../../src/domain/Account.ts";
 import type DatabaseConnection from "../../src/infra/database/DatabaseConnection.ts";
 import { PgPromiseAdapter } from "../../src/infra/database/DatabaseConnection.ts";
 import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
-import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository.ts";
+import { AccountRepositoryDatabase, AccountRepositoryORM } from "../../src/infra/repository/AccountRepository.ts";
+import ORM from "../../src/infra/orm/ORM.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;
 
 beforeEach(async () => {
     databaseConnection = new PgPromiseAdapter();
-    accountRepository = new AccountRepositoryDatabase(databaseConnection);
+    // accountRepository = new AccountRepositoryDatabase(databaseConnection);
+    const orm = new ORM(databaseConnection);
+    accountRepository = new AccountRepositoryORM(orm);
 }); 
 
 test("Deve persistir uma conta", async () => {
@@ -22,6 +25,10 @@ test("Deve persistir uma conta", async () => {
     expect(savedAccount.getEmail()).toBe(account.getEmail());
     expect(savedAccount.getDocument()).toBe(account.getDocument());
     expect(savedAccount.getPassword()).toBe(account.getPassword());
+    account.setName("Bob Martin");
+    await accountRepository.update(account);
+    const updatedAccount = await accountRepository.getById(account.getAccountId());
+    expect(updatedAccount.getName()).toBe(account.getName());
 });
 
 afterEach(async () => {

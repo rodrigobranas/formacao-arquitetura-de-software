@@ -1,5 +1,7 @@
 import Account from "../../domain/Account.ts";
 import type DatabaseConnection from "../database/DatabaseConnection.ts";
+import AccountModel from "../orm/AccountModel.ts";
+import type ORM from "../orm/ORM.ts";
 
 export default interface AccountRepository {
     save (account: Account): Promise<void>;
@@ -59,4 +61,30 @@ export class AccountRepositoryFake implements AccountRepository {
     async list(): Promise<Account[]> {
         return this.accounts;
     }
+}
+
+export class AccountRepositoryORM implements AccountRepository {
+
+    constructor (readonly orm: ORM) {
+    }
+
+    async save(account: Account): Promise<void> {
+        const accountModel = AccountModel.from(account);
+        await this.orm.save(accountModel);
+    }
+
+    async update(account: Account): Promise<void> {
+        const accountModel = AccountModel.from(account);
+        await this.orm.update(accountModel);
+    }
+
+    async getById(accountId: string): Promise<Account> {
+        const accountModel = await this.orm.get(AccountModel, "account_id", accountId);
+        return accountModel.toEntity();
+    }
+
+    async list(): Promise<Account[]> {
+        return [];
+    }
+
 }

@@ -4,9 +4,10 @@ import { Signup } from "../../src/application/usecase/Signup.ts";
 import type DatabaseConnection from "../../src/infra/database/DatabaseConnection.ts";
 import { PgPromiseAdapter } from "../../src/infra/database/DatabaseConnection.ts";
 import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
-import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository.ts";
+import { AccountRepositoryDatabase, AccountRepositoryORM } from "../../src/infra/repository/AccountRepository.ts";
 import type WalletRepository from "../../src/infra/repository/WalletRepository.ts";
 import { WalletRepositoryDatabase } from "../../src/infra/repository/WalletRepository.ts";
+import ORM from "../../src/infra/orm/ORM.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;
@@ -14,8 +15,10 @@ let walletRepository: WalletRepository;
 
 beforeEach(async () => {
     databaseConnection = new PgPromiseAdapter();
-    accountRepository = new AccountRepositoryDatabase(databaseConnection);
+    // accountRepository = new AccountRepositoryDatabase(databaseConnection);
     walletRepository = new WalletRepositoryDatabase(databaseConnection);
+    const orm = new ORM(databaseConnection);
+    accountRepository = new AccountRepositoryORM(orm);
 }); 
 
 test("Deve criar uma conta", async () => {
