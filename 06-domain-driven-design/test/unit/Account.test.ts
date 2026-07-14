@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import Account, { type Balance } from "../../src/domain/Account.ts";
+import Account from "../../src/domain/Account.ts";
 import UUID from "../../src/domain/UUID.ts";
 
 test("Deve criar uma conta", () => {
@@ -10,20 +10,18 @@ test("Deve criar uma conta", () => {
     expect(account.getEmail()).toBe("john.doe@gmail.com");
     expect(account.getDocument()).toBe("71428793860");
     expect(account.getPassword()).toBe("asdQWE123");
-    expect(account.balances).toEqual([]);
+    expect(account.checkPassword("asdQWE123")).toBe(true);
 });
 
 test("Deve restaurar o estado de uma conta", () => {
     const accountId = UUID.create().getValue();
-    const balances: Balance[] = [];
-    const account = new Account(accountId, "John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123", balances);
+    const account = new Account(accountId, "John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123");
     expect(account).toBeDefined();
     expect(account.getAccountId()).toBeDefined();
     expect(account.getName()).toBe("John Doe");
     expect(account.getEmail()).toBe("john.doe@gmail.com");
     expect(account.getDocument()).toBe("71428793860");
     expect(account.getPassword()).toBe("asdQWE123");
-    expect(account.balances).toEqual([]);
 });
 
 test("Não deve criar uma conta com nome inválido", () => {
@@ -40,31 +38,4 @@ test("Não deve criar uma conta com documento inválido", () => {
 
 test("Não deve criar uma conta com senha inválida", () => {
     expect(() => Account.create("John Doe", "john.doe@gmail.com", "71428793860", "asdQWE")).toThrow(new Error("Invalid password"));
-});
-
-test("Deve depositar em uma conta", () => {
-    const account = Account.create("John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123");
-    account.deposit("USD", 1000);
-    expect(account.getBalance("USD")).toBe(1000);
-});
-
-test("Deve fazer dois depósitos em uma conta", () => {
-    const account = Account.create("John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123");
-    account.deposit("USD", 1000);
-    account.deposit("USD", 1000);
-    expect(account.getBalance("USD")).toBe(2000);
-});
-
-test("Deve fazer um saque da conta", () => {
-    const account = Account.create("John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123");
-    account.deposit("USD", 1000);
-    account.deposit("USD", 1000);
-    account.withdraw("USD", 1000);
-    expect(account.getBalance("USD")).toBe(1000);
-});
-
-test("Não deve fazer um saque de uma conta sem saldo suficiente", () => {
-    const account = Account.create("John Doe", "john.doe@gmail.com", "71428793860", "asdQWE123");
-    account.deposit("USD", 500);
-    expect(() => account.withdraw("USD", 1000)).toThrow(new Error("Out of balance"));
 });

@@ -9,21 +9,25 @@ import { PaymentGatewayFake } from "../../src/infra/gateway/PaymentGateway.ts";
 import type AccountRepository from "../../src/infra/repository/AccountRepository.ts";
 import { AccountRepositoryDatabase } from "../../src/infra/repository/AccountRepository.ts";
 import UUID from "../../src/domain/UUID.ts";
+import type WalletRepository from "../../src/infra/repository/WalletRepository.ts";
+import { WalletRepositoryDatabase } from "../../src/infra/repository/WalletRepository.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;
+let walletRepository: WalletRepository;
 
 beforeEach(async () => {
     databaseConnection = new PgPromiseAdapter();
     accountRepository = new AccountRepositoryDatabase(databaseConnection);
+    walletRepository = new WalletRepositoryDatabase(databaseConnection);
 }); 
 
 test("Deve fazer um saque na conta", async () => {
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
-    const withdraw = new Withdraw(accountRepository);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
+    const withdraw = new Withdraw(accountRepository, walletRepository);
     const inputSignup = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -55,9 +59,9 @@ test("Deve fazer um saque na conta", async () => {
 test("Não deve fazer um saque em uma conta que não existe", async () => {
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
-    const withdraw = new Withdraw(accountRepository);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
+    const withdraw = new Withdraw(accountRepository, walletRepository);
     const inputWithdraw = {
         accountId: UUID.create().getValue(),
         assetId: "USD",
@@ -69,9 +73,9 @@ test("Não deve fazer um saque em uma conta que não existe", async () => {
 test("Não deve fazer um saque de uma conta sem saldo suficiente", async () => {
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
-    const withdraw = new Withdraw(accountRepository);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
+    const withdraw = new Withdraw(accountRepository, walletRepository);
     const inputSignup = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -94,7 +98,7 @@ test("Não deve fazer um saque de uma conta sem saldo suficiente", async () => {
         assetId: "USD",
         quantity: 100
     }
-    await expect(() => withdraw.execute(inputWithdraw)).rejects.toThrow(new Error("Out of balance"));
+    await expect(() => withdraw.execute(inputWithdraw)).rejects.toThrow(new Error("No balance"));
 });
 
 afterEach(async () => {

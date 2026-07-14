@@ -1,22 +1,25 @@
 import type AccountRepository from "../../infra/repository/AccountRepository.ts";
+import type WalletRepository from "../../infra/repository/WalletRepository.ts";
 import type UseCase from "./UseCase.ts";
 
 export class GetAccount implements UseCase {
 
     constructor (
-        readonly accountRepository: AccountRepository
+        readonly accountRepository: AccountRepository,
+        readonly walletRepository: WalletRepository
     ) {
     }
 
     async execute (accountId: string): Promise<Output> {
         const account = await this.accountRepository.getById(accountId);
+        const wallet = await this.walletRepository.getByAccountId(account.getAccountId());
         const output = {
             accountId: account.getAccountId(),
             name: account.getName(),
             email: account.getEmail(),
             document: account.getDocument(),
             password: account.getPassword(),
-            balances: account.balances.map((balance: any) => ({ assetId: balance.assetId, quantity: balance.quantity }))
+            balances: wallet.balances.map((balance: any) => ({ assetId: balance.assetId, quantity: balance.quantity }))
         }
         return output;
     }

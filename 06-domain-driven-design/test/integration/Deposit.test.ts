@@ -11,20 +11,24 @@ import type AccountRepository from "../../src/infra/repository/AccountRepository
 import { AccountRepositoryDatabase, AccountRepositoryFake } from "../../src/infra/repository/AccountRepository.ts";
 import sinon from "sinon";
 import UUID from "../../src/domain/UUID.ts";
+import type WalletRepository from "../../src/infra/repository/WalletRepository.ts";
+import { WalletRepositoryDatabase } from "../../src/infra/repository/WalletRepository.ts";
 
 let databaseConnection: DatabaseConnection;
 let accountRepository: AccountRepository;
+let walletRepository: WalletRepository;
 
 beforeEach(async () => {
     databaseConnection = new PgPromiseAdapter();
     accountRepository = new AccountRepositoryDatabase(databaseConnection);
+    walletRepository = new WalletRepositoryDatabase(databaseConnection);
 }); 
 
 test("Deve fazer dois depósitos do mesmo tipo de recurso em uma conta", async () => {
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
     const inputSignup = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -53,8 +57,8 @@ test("Deve fazer um depósito em uma conta spy", async () => {
     const httpClient = new FetchAdapter();
     const paymentGateway = new PaymentGatewayHttp(httpClient);
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
     const processTransactionSpy = sinon.spy(PaymentGatewayHttp.prototype, "processTransaction");
     const inputSignup = {
         name: "John Doe",
@@ -91,8 +95,8 @@ test("Deve fazer um depósito em uma conta mock", async () => {
     const httpClient = new AxiosAdapter();
     const paymentGateway = new PaymentGatewayHttp(httpClient);
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
     const accountRepositoryMock = sinon.mock(AccountRepositoryDatabase.prototype);
     const paymentGatewayMock = sinon.mock(PaymentGatewayHttp.prototype);
     const inputSignup = {
@@ -112,8 +116,7 @@ test("Deve fazer um depósito em uma conta mock", async () => {
         creditCardExpDate: "05/2027",
         creditCardCvv: "123"
     }
-    const mockedAccount = new Account(outputSignup.accountId, inputSignup.name, inputSignup.email, inputSignup.document, inputSignup.password, []);
-    accountRepositoryMock.expects("update").once().resolves();
+    const mockedAccount = new Account(outputSignup.accountId, inputSignup.name, inputSignup.email, inputSignup.document, inputSignup.password);
     accountRepositoryMock.expects("getById").twice().resolves(mockedAccount);
     paymentGatewayMock.expects("processTransaction").once().withArgs({ 
         creditCardHolder: inputDeposit.creditCardHolder,
@@ -138,8 +141,8 @@ test("Deve fazer um depósito em uma conta com fake", async () => {
     const accountRepository = new AccountRepositoryFake();
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
     const inputSignup = {
         name: "John Doe",
         email: "john.doe@gmail.com",
@@ -165,8 +168,8 @@ test("Deve fazer um depósito em uma conta com fake", async () => {
 test("Não deve fazer depósito em uma conta que não existe", async () => {
     const paymentGateway = new PaymentGatewayFake();
     const signup = new Signup(accountRepository);
-    const getAccount = new GetAccount(accountRepository);
-    const deposit = new Deposit(accountRepository, paymentGateway);
+    const getAccount = new GetAccount(accountRepository, walletRepository);
+    const deposit = new Deposit(accountRepository, walletRepository, paymentGateway);
     const inputDeposit = {
         accountId: UUID.create().getValue(),
         assetId: "USD",
