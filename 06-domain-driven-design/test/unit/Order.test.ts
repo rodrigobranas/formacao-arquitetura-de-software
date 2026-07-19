@@ -1,6 +1,7 @@
 import { test, expect } from "vitest";
 import Order from "../../src/domain/Order.ts";
 import UUID from "../../src/domain/UUID.ts";
+import type OrderPlaced from "../../src/domain/OrderPlaced.ts";
 
 test("Deve criar uma ordem", () => {
     const accountId = UUID.create().getValue();
@@ -14,4 +15,9 @@ test("Deve criar uma ordem", () => {
     expect(order.fillQuantity).toBe(0);
     expect(order.fillPrice).toBe(0);
     expect(order.timestamp).toBeDefined();
+    expect(order.getEvents()).toHaveLength(1);
+    const events = order.getEvents() as OrderPlaced[];
+    expect(events[0]?.eventName).toBe("orderPlaced");
+    expect(events[0]?.orderId).toBe(order.getOrderId());
+    expect(events[0]?.marketId).toBe(order.marketId);
 });

@@ -1,3 +1,5 @@
+import type DomainEvent from "../../domain/DomainEvent.ts";
+
 export default class Mediator {
     handlers: { event: string, callback: Function }[] = [];
 
@@ -5,10 +7,10 @@ export default class Mediator {
         this.handlers.push({ event, callback });
     }
 
-    async notifyAll (event: string, data: any) {
+    async notifyAll (event: DomainEvent) {
         for (const handler of this.handlers) {
-            if (handler.event === event) {
-                await handler.callback(data);
+            if (handler.event === event.eventName) {
+                await handler.callback(event);
             }
         }
     }

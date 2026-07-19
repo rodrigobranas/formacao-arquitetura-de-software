@@ -1,21 +1,26 @@
+import type DomainEvent from "./DomainEvent.ts";
+import OrderPlaced from "./OrderPlaced.ts";
 import UUID from "./UUID.ts";
 
 export default class Order {
     private orderId: UUID;
     private accountId: UUID;
 
-    constructor (orderId: string, accountId: string, readonly marketId: string, readonly side: string, readonly quantity: number, readonly price: number, public fillQuantity: number, public fillPrice: number, public status: string, readonly timestamp: Date) {
+    constructor (orderId: string, accountId: string, readonly marketId: string, readonly side: string, readonly quantity: number, readonly price: number, public fillQuantity: number, public fillPrice: number, public status: string, readonly timestamp: Date, private events: DomainEvent[] = []) {
         this.orderId = new UUID(orderId);
         this.accountId = new UUID(accountId);
     }
 
     static create (accountId: string, marketId: string, side: string, quantity: number, price: number) {
-        const orderId = UUID.create();
+        const orderId = UUID.create().getValue();
         const status = "open";
         const timestamp = new Date();
         const fillQuantity = 0;
         const fillPrice = 0;
-        return new Order(orderId.getValue(), accountId, marketId, side, quantity, price, fillQuantity, fillPrice, status, timestamp);
+        const events = [
+            new OrderPlaced(orderId, marketId)
+        ]
+        return new Order(orderId, accountId, marketId, side, quantity, price, fillQuantity, fillPrice, status, timestamp, events);
     }
 
     fill (quantity: number, price: number) {
@@ -38,6 +43,10 @@ export default class Order {
 
     getAccountId () {
         return this.accountId.getValue();
+    }
+
+    getEvents () {
+        return this.events;
     }
 
 }
