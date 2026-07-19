@@ -15,7 +15,7 @@ export default class ExecuteOrder implements UseCase {
             const [highestBuy] = orders.filter((order: Order) => order.side === "buy").sort((a, b) => b.price - a.price);
             const [lowestSell] = orders.filter((order: Order) => order.side === "sell").sort((a, b) => a.price - b.price);
             if (!highestBuy || !lowestSell || highestBuy.price < lowestSell.price) break;
-            const quantity = Math.min(highestBuy.quantity, lowestSell.quantity);
+            const quantity = Math.min(highestBuy.getAvailableQuantity(), lowestSell.getAvailableQuantity());
             const price = (highestBuy.timestamp.getTime() > lowestSell.timestamp.getTime()) ? lowestSell.price : highestBuy.price;
             const side = (highestBuy.timestamp.getTime() > lowestSell.timestamp.getTime()) ? "buy" : "sell";
             highestBuy.fill(quantity, price);
