@@ -1,12 +1,15 @@
+import Observable from "../infra/handler/Observable.ts";
 import type DomainEvent from "./DomainEvent.ts";
+import OrderFilled from "./OrderFilled.ts";
 import OrderPlaced from "./OrderPlaced.ts";
 import UUID from "./UUID.ts";
 
-export default class Order {
+export default class Order extends Observable {
     private orderId: UUID;
     private accountId: UUID;
 
     constructor (orderId: string, accountId: string, readonly marketId: string, readonly side: string, readonly quantity: number, readonly price: number, public fillQuantity: number, public fillPrice: number, public status: string, readonly timestamp: Date, private events: DomainEvent[] = []) {
+        super();
         this.orderId = new UUID(orderId);
         this.accountId = new UUID(accountId);
     }
@@ -31,6 +34,7 @@ export default class Order {
         if (this.getAvailableQuantity() === 0) {
             this.status = "closed";
         }
+        this.notifyAll(new OrderFilled(this.getOrderId(), quantity, price));
     }
 
     getAvailableQuantity () {
