@@ -23,9 +23,13 @@ export default class Order {
         const newAmount = quantity * price;
         this.fillQuantity += quantity;
         this.fillPrice = (actualAmount + newAmount)/this.fillQuantity;
-        if (this.quantity === this.fillQuantity) {
+        if (this.getAvailableQuantity() === 0) {
             this.status = "closed";
         }
+    }
+
+    getAvailableQuantity () {
+        return this.quantity - this.fillQuantity;
     }
 
     getOrderId () {
