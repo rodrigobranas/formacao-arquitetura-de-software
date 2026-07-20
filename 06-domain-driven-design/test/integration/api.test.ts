@@ -1,4 +1,5 @@
 import { expect, test } from "vitest";
+import { sleep } from "../../src/infra/util/sleep.ts";
 
 test("Deve criar uma conta", async () => {
     const input = {
@@ -143,6 +144,7 @@ test("Deve executar uma ordem de compra com uma ordem de venda", async () => {
         body: JSON.stringify(inputPlaceOrderSell)
     });
     const outputPlaceOrderSell = await responsePlaceOrderSell.json();
+    await sleep(100);
     const responseGetOrderBuy = await fetch(`http://localhost:3000/orders/${outputPlaceOrderBuy.orderId}`);
     const outputGetOrderBuy = await responseGetOrderBuy.json();
     const responseGetOrderSell = await fetch(`http://localhost:3000/orders/${outputPlaceOrderSell.orderId}`);

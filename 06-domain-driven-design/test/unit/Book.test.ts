@@ -17,8 +17,8 @@ test("Deve executar uma ordem de compra e de venda", async () => {
     book.register("tradeCreated", (tradeCreated: TradeCreated) => {
         events.push(tradeCreated);
     });
-    book.insert(Order.create(accountId, marketId, "buy", 1, 60000));
-    book.insert(Order.create(accountId, marketId, "sell", 1, 58000));
+    await book.insert(Order.create(accountId, marketId, "buy", 1, 60000));
+    await book.insert(Order.create(accountId, marketId, "sell", 1, 58000));
     expect(events).toHaveLength(3);
     const orderFilled1 = events[0] as OrderFilled;
     const orderFilled2 = events[1] as OrderFilled;

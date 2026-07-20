@@ -11,9 +11,9 @@ export default class Book extends Observable {
         super();
     }
 
-    insert (order: Order) {
-        order.register("orderFilled", (orderFilled: OrderFilled) => {
-            this.notifyAll(orderFilled);
+    async insert (order: Order) {
+        order.register("orderFilled", async (orderFilled: OrderFilled) => {
+            await this.notifyAll(orderFilled);
         });
         if (order.side === "buy") {
             this.buys.push(order);
@@ -23,10 +23,10 @@ export default class Book extends Observable {
             this.sells.push(order);
             this.sells.sort((a, b) => a.price - b.price);
         }
-        this.execute();
+        await this.execute();
     }
 
-    execute () {
+    async execute () {
         while (true) {
             const [highestBuy] = this.buys;
             const [lowestSell] = this.sells;
@@ -34,11 +34,11 @@ export default class Book extends Observable {
             const quantity = Math.min(highestBuy.getAvailableQuantity(), lowestSell.getAvailableQuantity());
             const price = (highestBuy.timestamp.getTime() > lowestSell.timestamp.getTime()) ? lowestSell.price : highestBuy.price;
             const side = (highestBuy.timestamp.getTime() > lowestSell.timestamp.getTime()) ? "buy" : "sell";
-            highestBuy.fill(quantity, price);
-            lowestSell.fill(quantity, price);
+            await highestBuy.fill(quantity, price);
+            await lowestSell.fill(quantity, price);
             if (highestBuy.status === "closed") this.buys.splice(this.buys.indexOf(highestBuy), 1);
-            if (lowestSell.status === "closed") this.sells.splice(this.buys.indexOf(lowestSell), 1);
-            this.notifyAll(new TradeCreated(highestBuy.getOrderId(), lowestSell.getOrderId(), side, quantity, price));
+            if (lowestSell.status === "closed") this.sells.splice(this.sells.indexOf(lowestSell), 1);
+            await this.notifyAll(new TradeCreated(this.marketId, highestBuy.getOrderId(), lowestSell.getOrderId(), side, quantity, price));
         }
     }
 }

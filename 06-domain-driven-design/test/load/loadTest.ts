@@ -1,7 +1,7 @@
 import { sleep } from "../../src/infra/util/sleep.ts";
 
 async function main () {
-    const marketId = `BTC-USD-${Math.random()}`;
+    const marketId = `BTC-USD`;
     const input = {
         name: "John Doe",
         email: "john.doe@gmail.com",

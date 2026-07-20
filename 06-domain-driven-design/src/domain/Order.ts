@@ -26,7 +26,7 @@ export default class Order extends Observable {
         return new Order(orderId, accountId, marketId, side, quantity, price, fillQuantity, fillPrice, status, timestamp, events);
     }
 
-    fill (quantity: number, price: number) {
+    async fill (quantity: number, price: number) {
         const actualAmount = this.fillQuantity * this.fillPrice;
         const newAmount = quantity * price;
         this.fillQuantity += quantity;
@@ -34,7 +34,7 @@ export default class Order extends Observable {
         if (this.getAvailableQuantity() === 0) {
             this.status = "closed";
         }
-        this.notifyAll(new OrderFilled(this.getOrderId(), quantity, price));
+        await this.notifyAll(new OrderFilled(this.getOrderId(), quantity, price));
     }
 
     getAvailableQuantity () {
